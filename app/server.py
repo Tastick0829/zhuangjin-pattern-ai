@@ -44,7 +44,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# ---------- 启动自检 ----------
+# ---------- 密钥配置状态（缺失时给出指引，不阻止服务启动）----------
 _missing = [
     n for n, v in (
         ("FREEIMGHOST_API_KEY", FREEIMGHOST_API_KEY),
@@ -52,11 +52,30 @@ _missing = [
         ("LIBLIB_SECRET_KEY", LIBLIB_SECRET_KEY),
     ) if not v
 ]
+API_CONFIGURED = not _missing
+
 if _missing:
-    raise RuntimeError(
-        "缺少必需的环境变量: " + ", ".join(_missing)
-        + "\n请复制 .env.example 为 .env 并填入你自己的密钥。"
-    )
+    print("=" * 66)
+    print("[提示] 以下 API 密钥尚未配置: " + ", ".join(_missing))
+    print("       服务仍可启动，但「上传图片」与「创意生成」会返回 503 并给出指引。")
+    print("       配置文档: docs/06-api-keys.md")
+    print("=" * 66)
+else:
+    print("[OK] API 密钥已配置，功能可用。")
+
+
+def _api_key_error_response():
+    """密钥未配置时的统一提示（不 500，而是明确告知缺什么、去哪配）"""
+    return jsonify({
+        "error": "API 密钥未配置，该功能暂不可用",
+        "missing": _missing,
+        "message": "请复制 .env.example 为 .env，填入你自己的密钥后重启服务。",
+        "how_to": {
+            "FreeImageHost（图床，免费注册）": "https://freeimghost.net/ → 注册 → API → 复制 API Key",
+            "LiblibAI AccessKey + SecretKey": "https://www.liblib.art/ → 个人中心 → 开放平台 → 创建应用获取",
+        },
+        "doc": "docs/06-api-keys.md",
+    }), 503
 
 
 @app.route("/")
@@ -72,6 +91,8 @@ def generate_signature(uri, timestamp, nonce, secret_key):
 
 @app.route('/generate', methods=['POST'])
 def generate_creative():
+    if not API_CONFIGURED:
+        return _api_key_error_response()
     try:
         data = request.json
         if not data or 'image_url' not in data:
@@ -140,6 +161,8 @@ def generate_creative():
 
 @app.route('/upload', methods=['POST', 'GET'])
 def upload_file():
+    if not API_CONFIGURED:
+        return _api_key_error_response()
     if request.method == 'GET':
         return "请使用POST方法上传文件", 400
         
