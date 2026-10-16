@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>壮锦新生-非遗纹样创意生成</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f9f4e8 0%, #f1e8d7 100%);
+            color: #5c3a21;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M10,10 Q25,5 40,10 T70,10 Q85,5 100,10 V90 Q85,95 70,90 T40,90 Q25,95 10,90 Z" fill="%23d4af7a" opacity="0.05"/></svg>');
+            background-size: 120px;
+        }
+
+        /* 顶部导航 */
+        .top-nav {
+            background: linear-gradient(to right, #7a3510, #8b4513);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #d4af7a;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            background: linear-gradient(135deg, #d4af7a 0%, #b08c5a 100%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            color: #5c3a21;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #f8f1e5;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: #d4af7a;
+            color: #5c3a21;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* 卡片容器 */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            flex: 1;
+            min-width: 300px;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, #8b4513, #a0522d);
+            color: white;
+            padding: 22px;
+            text-align: center;
+            border-bottom: 3px solid #d4af7a;
+        }
+
+        .card-body {
+            padding: 28px;
+        }
+
+        /* 首页样式 */
+        .home-page {
+            display: block;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 20px;
+        }
+
+        .welcome-title {
+            font-size: 42px;
+            color: #7a3510;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(to right, #8b4513, #d4af7a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .welcome-subtitle {
+            font-size: 20px;
+            color: #8b4513;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+            padding: 15px 30px;
+            background: rgba(212, 175, 122, 0.15);
+            border-radius: 15px;
+            border-left: 4px solid #d4af7a;
+        }
+
+        .nav-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            flex: 0.5;
+            min-width: 250px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            background: linear-gradient(to right, #d4af7a, #b08c5a);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 19px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(to right, #b08c5a, #8b4513);
+            transform: translateY(-4px);
+            box-shadow: 0 7px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn i {
+            font-size: 26px;
+        }
+
+        /* 轮播图样式 */
+        .carousel-container {
+            position: relative;
+            height: 480px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+            border: 3px solid rgba(139, 69, 19, 0.15);
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 25px;
+            left: 25px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            max-width: 75%;
+            font-size: 18px;
+            backdrop-filter: blur(4px);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .carousel-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: #d4af7a;
+            transform: scale(1.2);
+        }
+
+        /* 介绍页面样式 */
+        .intro-content {
+            line-height: 1.85;
+            font-size: 17px;
+        }
+
+        .intro-content h2 {
+            color: #8b4513;
+            margin: 25px 0 18px;
+            border-bottom: 3px solid #d4af7a;
+            padding-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .intro-content p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+
+        .intro-images {
+            display: flex;
+            gap: 25px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+
+        .intro-img {
+            flex: 1;
+            min-width: 260px;
+            height: 260px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #d4af7a;
+        }
+
+        /* 生成页面样式 */
+        .generate-container {
+            background-color: #fff;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(139, 69, 19, 0.15);
+        }
+
+        .generate-title {
+            color: #8b4513;
+            text-align: center;
+            font-size: 2.4em;
+            margin-bottom: 35px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .generate-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, #8b4513, #d4af7a);
+            border-radius: 2px;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .preview-section {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+
+        .image-box {
+            flex: 1;
+            min-width: 320px;
+            max-width: 460px;
+            border: 3px solid #d4af7a;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fffdf8;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            border: 2px dashed #d4af7a;
+            margin-top: 20px;
+            background: #fcf8f0;
+            border-radius: 8px;
+        }
+
+        button {
+            background: linear-gradient(to right, #8b4513, #a0522d);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 17px;
+            transition: all 0.3s;
+            margin: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #a0522d, #7a3510);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+        }
+
+        select {
+            padding: 12px 25px;
+            border: 2px solid #d4af7a;
+            border-radius: 30px;
+            background: #fff;
+            font-size: 17px;
+            margin: 25px 0;
+            width: 220px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .api-section {
+            text-align: center;
+            margin-top: 35px;
+            padding: 25px;
+            background: #fbf4e8;
+            border-radius: 15px;
+            border: 2px dashed #d4af7a;
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 14px 30px;
+            background: linear-gradient(to right, #d4af7a, #b08c5a);
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-label:hover {
+            background: linear-gradient(to right, #b08c5a, #8b4513);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        #imageUpload {
+            display: none;
+        }
+
+        .product-preview {
+            text-align: center;
+            margin-top: 40px;
+            padding: 25px;
+            background: #fbf4e8;
+            border-radius: 15px;
+            border: 2px solid #d4af7a;
+        }
+
+        .product-preview .image-box {
+            margin: 0 auto;
+            max-width: 520px;
+        }
+
+        #downloadProductBtn {
+            background: linear-gradient(to right, #d4af7a, #b08c5a);
+            margin-top: 20px;
+            padding: 12px 35px;
+            font-size: 18px;
+        }
+
+        #downloadProductBtn:hover {
+            background: linear-gradient(to right, #b08c5a, #8b4513);
+        }
+
+        .tips-section {
+            margin: 25px auto;
+            padding: 20px;
+            background-color: #fff9e6;
+            border-left: 5px solid #d4af7a;
+            border-radius: 10px;
+            max-width: 850px;
+            font-size: 16px;
+        }
+
+        .tips-text {
+            color: #7a3510;
+            line-height: 1.7;
+        }
+
+        .tips-link {
+            color: #8b4513;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tips-link:hover {
+            color: #a0522d;
+            text-decoration: none;
+        }
+
+        /* 页脚样式 */
+        footer {
+            background: linear-gradient(to right, #5c3a21, #7a3510);
+            color: #f8f1e5;
+            padding: 40px 0 30px;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 3px solid #d4af7a;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #d4af7a;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .footer-link:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .copyright {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #e0c9a6;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(to right, #8b4513, #a0522d);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin: 25px 0;
+            transition: all 0.3s;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(to right, #a0522d, #7a3510);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        /* 文创定制页面样式 */
+        .customize-container {
+            background-color: #fff;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(139, 69, 19, 0.15);
+        }
+        
+        .customize-title {
+            color: #8b4513;
+            text-align: center;
+            font-size: 2.4em;
+            margin-bottom: 35px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .customize-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 4px;
+            background: linear-gradient(to right, #8b4513, #d4af7a);
+            border-radius: 2px;
+        }
+        
+        .customize-upload-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #fbf4e8;
+            border-radius: 15px;
+            border: 2px dashed #d4af7a;
+        }
+        
+        .customize-preview-section {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+        
+        .pattern-preview {
+            flex: 1;
+            min-width: 320px;
+            max-width: 460px;
+            border: 3px solid #d4af7a;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fffdf8;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .product-upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 20px;
+            background: #fbf4e8;
+            border-radius: 15px;
+            border: 2px dashed #d4af7a;
+        }
+        
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 200px;
+            border: 3px dashed #d4af7a;
+            border-radius: 12px;
+            background: #fcf8f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            background: #fdf5e6;
+            border-color: #b08c5a;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #d4af7a;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #8b4513;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        /* 纹样介绍页面样式 */
+        .pattern-intro-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 25px;
+        }
+        
+        .pattern-nav {
+            flex: 0 0 250px;
+            background: #f8f1e5;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+        
+        .pattern-nav-item {
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #5c3a21;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid transparent;
+        }
+        
+        .pattern-nav-item:hover {
+            background: rgba(212, 175, 122, 0.25);
+            border-left-color: #d4af7a;
+        }
+        
+        .pattern-nav-item.active {
+            background: linear-gradient(to right, rgba(212, 175, 122, 0.25), rgba(176, 140, 90, 0.15));
+            border-left-color: #8b4513;
+            font-weight: bold;
+            color: #7a3510;
+        }
+        
+        .pattern-nav-item i {
+            font-size: 22px;
+        }
+        
+        .pattern-content {
+            flex: 1;
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+        
+        .pattern-content-item {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .pattern-content-item.active {
+            display: block;
+        }
+        
+        .pattern-content-item h3 {
+            color: #8b4513;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d4af7a;
+            font-size: 24px;
+        }
+        
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .pattern-card {
+            background: #fcf8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            border: 1px solid rgba(212, 175, 122, 0.5);
+        }
+        
+        .pattern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        
+        .pattern-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .pattern-info {
+            padding: 20px;
+        }
+        
+        .pattern-info h4 {
+            color: #7a3510;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .pattern-info p {
+            color: #5c3a21;
+            line-height: 1.6;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .color-item {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .venue-list {
+            list-style: none;
+        }
+        
+        .venue-item {
+            padding: 15px 0;
+            border-bottom: 1px dashed #d4af7a;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .venue-icon {
+            flex: 0 0 40px;
+            height: 40px;
+            background: #d4af7a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .venue-info {
+            flex: 1;
+        }
+        
+        .venue-info h4 {
+            color: #7a3510;
+            margin-bottom: 5px;
+        }
+        
+        .venue-info p {
+            color: #5c3a21;
+            line-height: 1.6;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .card-container {
+                flex-direction: column;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .carousel-container {
+                height: 350px;
+            }
+            
+            .preview-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-card {
+                flex: 1;
+                min-width: 100%;
+            }
+            
+            .welcome-title {
+                font-size: 32px;
+            }
+            
+            .welcome-subtitle {
+                font-size: 16px;
+            }
+            
+            .pattern-intro-container {
+                flex-direction: column;
+            }
+            
+            .pattern-nav {
+                flex: 0 0 auto;
+            }
+            
+            .customize-upload-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">锦</div>
+                <div class="logo-text">壮锦新生</div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-page="home">首页</a>
+                <a href="#" class="nav-link" data-page="introduce">壮锦介绍</a>
+                <a href="#" class="nav-link" data-page="pattern-intro">纹样介绍</a>
+                <a href="#" class="nav-link" data-page="generate">壮锦创新生成</a>
+                <a href="#" class="nav-link" data-page="culturalCustomize">壮锦文创定制</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-container">
+        <!-- 首页 -->
+        <div id="home-page" class="page active">
+            <div class="welcome-section">
+                <h1 class="welcome-title">非遗新生 - 壮锦纹样创新</h1>
+                <p class="welcome-subtitle">探索壮族文化的瑰宝，体验传统壮锦与现代科技的完美融合，创造属于您的独特纹样设计，让壮锦焕发新生。</p>
+            </div>
+            
+            <div class="card-container">
+                <div class="card nav-card">
+                    <div class="card-header">
+                        <h2>导航</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="nav-buttons">
+                            <button class="nav-btn" data-page="introduce">
+                                <i>📜</i> 壮锦介绍
+                            </button>
+                            <button class="nav-btn" data-page="pattern-intro">
+                                <i>🔍</i> 纹样介绍
+                            </button>
+                            <button class="nav-btn" data-page="generate">
+                                <i>🎨</i> 壮锦创新生成
+                            </button>
+                            <button class="nav-btn" data-page="culturalCustomize">
+                                <i>🏺</i> 壮锦文创定制
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>壮锦纹样展示</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="carousel-container">
+                            <div class="carousel-slide active" style="background-image: url('https://img.alicdn.com/bao/uploaded/i4/11677830/O1CN01dvsQah27iBmVROJZ4_!!0-item_pic.jpg')">
+                                <div class="carousel-caption">传统壮锦纹样 - 几何纹样</div>
+                            </div>
+                            <div class="carousel-slide" style="background-image: url('https://omo-oss-image.thefastimg.com/portal-saas/new2021122215093006177/cms/image/315e3e4e-c365-4f7d-8ff9-113df3f10ebb.jpg')">
+                                <div class="carousel-caption">创新设计 - 锦绣幸福画</div>
+                            </div>
+                            <div class="carousel-slide" style="background-image: url('https://img.alicdn.com/i4/383411927/O1CN01ZUcVnW1Q6bm4burvW_!!383411927.jpg')">
+                                <div class="carousel-caption">壮锦文化 </div>
+                            </div>
+                            <div class="carousel-slide" style="background-image: url('http://www.cnlic.org.cn/gdsfc/tanxiangguang/img/zp1.png')">
+                                <div class="carousel-caption">壮锦工艺品 - 壮锦壁挂</div>
+                            </div>
+                            
+                            <div class="carousel-nav">
+                                <div class="carousel-dot active" data-index="0"></div>
+                                <div class="carousel-dot" data-index="1"></div>
+                                <div class="carousel-dot" data-index="2"></div>
+                                <div class="carousel-dot" data-index="3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>壮锦文化</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>壮锦是壮族传统手工织锦，与云锦、蜀锦、宋锦并称中国四大名锦。据传起源于宋代，是中华民族文化瑰宝。</p>
+                        <p>壮锦图案生动，结构严谨，色彩斑斓，充满热烈、开朗的民族格调，体现了壮族人民对美好生活的追求与向往。</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>制作工艺</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>传统壮锦采用手工织机，以棉线为经，丝线为纬，采用通经断纬的方法巧妙交织而成。</p>
+                        <p>整个制作过程需要经过纺线、染色、浆线、卷纱、梳纱、穿综、穿扣等十多道工序，工艺十分复杂。</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>创新应用</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>通过现代AI技术，我们实现了传统壮锦纹样的数字化创新，让每个人都能轻松设计属于自己的壮锦纹样。</p>
+                        <p>生成的纹样可应用于服装、家居、文创产品等多个领域，让传统非遗焕发新生。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 介绍页面 -->
+        <div id="introduce-page" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>壮锦介绍</h2>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="back-btn" data-page="home">← 返回首页</a>
+                    
+                    <div class="intro-content">
+                        <h2>壮锦的历史渊源</h2>
+                        <p>壮锦是广西壮族地区一项最具代表性的民族手工艺品，其历史可追溯到汉代。据《汉书》记载，当时壮族先民的纺织品已成为贡品。唐宋时期，壮锦工艺得到进一步发展，明清时期达到鼎盛，成为宫廷贡品。壮锦以独特的传统手工技艺和文化特征与南京云锦、苏州宋锦、成都蜀锦齐名，共称为中国"四大名锦"，是壮族人民世代相传的手工织锦技艺结晶，被誉为"东方绚丽的彩霞"。</p>
+                        
+                        <h2>工艺特点</h2>
+                        <p>壮锦采用通经断纬的织造方法，以棉线或麻线作经线，以真丝、人造丝或金、银丝作纬线。其最大特点是正反两面花纹相同而方向相反，质地厚重，色彩艳丽，对比强烈，具有浓艳粗犷的艺术风格。</p>
+                        
+                        <h2>传统图案</h2>
+                        <p>壮锦图案题材广泛，形式多样，结构严谨。常见的有：</p>
+                        <ul>
+                            <li>几何纹样：菱形纹、回纹、水波纹、云雷纹等</li>
+                            <li>植物纹样：菊花、莲花、牡丹、梅兰竹菊等</li>
+                            <li>动物纹样：龙凤、麒麟、狮虎、蝴蝶、鱼鸟等</li>
+                            <li>文字图案：福、禄、寿、喜等吉祥文字</li>
+                        </ul>
+                        
+                        <div class="intro-images">
+                            <div class="intro-img" style="background-image: url('http://www.gufengjia.com/d/file/images/201906301131/13-1FS1110G7-51.jpg')"></div>
+                            <div class="intro-img" style="background-image: url('https://img.alicdn.com/i4/383411927/O1CN01ZUcVnW1Q6bm4burvW_!!383411927.jpg')"></div>
+                            <div class="intro-img" style="background-image: url('https://omo-oss-image.thefastimg.com/portal-saas/new2021122215093006177/cms/image/bc312cf2-ef1d-4c9e-baa5-3072d84454d0.jpg')"></div>
+                        </div>
+                        
+                        <h2>文化价值</h2>
+                        <p>2006年，壮锦织造技艺被列入第一批国家级非物质文化遗产名录。壮锦不仅是一种工艺品，更是壮族文化的载体，每一幅壮锦都蕴含着壮族人民的历史记忆、审美情趣和精神信仰。</p>
+                        
+                        <h2>现代传承与创新</h2>
+                        <p>近年来，壮锦在保持传统工艺的基础上，不断进行创新。通过引入现代设计理念和新技术，开发出更多符合现代人审美需求的产品。同时，壮锦也成为民族地区精准扶贫的重要产业，为当地妇女提供了就业机会。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 纹样介绍页面 -->
+        <div id="pattern-intro-page" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>壮锦纹样介绍</h2>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="back-btn" data-page="home">← 返回首页</a>
+                    
+                    <div class="pattern-intro-container">
+                        <!-- 左侧导航 -->
+                        <div class="pattern-nav">
+                            <div class="pattern-nav-item active" data-content="meaning">
+                                <i>🔮</i> 纹样寓意
+                            </div>
+                            <div class="pattern-nav-item" data-content="colors">
+                                <i>✨</i> 常见纹样
+                            </div>
+                            <div class="pattern-nav-item" data-content="venues">
+                                <i>🏛️</i> 可参观的壮锦文化场所
+                            </div>
+                        </div>
+                        
+                        <!-- 右侧内容 -->
+                        <div class="pattern-content">
+                            <!-- 纹样寓意 -->
+                            <div id="meaning-content" class="pattern-content-item active">
+                                <h3>壮锦纹样寓意</h3>
+                                <p>壮锦纹样承载着壮族人民对美好生活的向往和精神寄托，每一种纹样都有其独特的文化内涵和象征意义。</p>
+                                
+                                <div class="pattern-grid">
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://img.tukuppt.com/png_preview/00/40/83/pQUyhfPLzo.jpg!/fw/780')"></div>
+                                        <div class="pattern-info">
+                                            <h4>龙凤呈祥</h4>
+                                            <p>龙象征力量与权威，凤象征美丽与吉祥，两者结合代表美满婚姻和家庭幸福。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://pic3.zhimg.com/v2-920754a8deeef82d80f3b07298b252ea_r.jpg')"></div>
+                                        <div class="pattern-info">
+                                            <h4>连年有余</h4>
+                                            <p>以莲花和鱼为主要元素，象征富足安康、连年有余的吉祥寓意。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://img.alicdn.com/i2/300236424/O1CN01DnahSY1xKEx8G6pVb_!!300236424.jpg')"></div>
+                                        <div class="pattern-info">
+                                            <h4>花开富贵</h4>
+                                            <p>牡丹花象征富贵荣华，表达对财富和地位的追求与向往。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://pic.nximg.cn/file/20150331/8596787_085152109881_2.jpg')"></div>
+                                        <div class="pattern-info">
+                                            <h4>福禄寿喜</h4>
+                                            <p>以蝙蝠、鹿、仙鹤、喜鹊等动物组合，象征福气、禄位、长寿、喜庆。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 常见纹样 -->
+                            <div id="common-patterns-content" class="pattern-content-item">
+                                <h3>壮锦常见纹样</h3>
+                                <p>壮锦纹样丰富多样，既有几何图案，也有动植物纹样，每一类都有其独特的文化内涵和艺术价值。</p>
+                                
+                                <div class="pattern-grid">
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://images.unsplash.com/photo-1611080920647-3a8ddfb2c1d4?q=80&w=1000')"></div>
+                                        <div class="pattern-info">
+                                            <h4>几何纹样</h4>
+                                            <p>菱形纹、回纹、水波纹、云雷纹等，结构严谨，富有韵律感。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1000')"></div>
+                                        <div class="pattern-info">
+                                            <h4>植物纹样</h4>
+                                            <p>菊花、莲花、牡丹、梅兰竹菊等，象征自然之美和生命活力。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=1000')"></div>
+                                        <div class="pattern-info">
+                                            <h4>动物纹样</h4>
+                                            <p>龙凤、麒麟、狮虎、蝴蝶、鱼鸟等，代表祥瑞和力量。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?q=80&w=1000')"></div>
+                                        <div class="pattern-info">
+                                            <h4>文字图案</h4>
+                                            <p>福、禄、寿、喜等吉祥文字，表达美好祝愿。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://images.unsplash.com/photo-1520006403909-838d6b92c22e?q=80&w=1000')"></div>
+                                        <div class="pattern-info">
+                                            <h4>自然景象</h4>
+                                            <p>日月星辰、山川河流等，表达对自然的敬畏与崇拜。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pattern-card">
+                                        <div class="pattern-img" style="background-image: url('https://images.unsplash.com/photo-1618517351616-38d2f119c5a6?q=80&w=1000')"></div>
+                                        <div class="pattern-info">
+                                            <h4>生活场景</h4>
+                                            <p>农耕、渔猎、歌舞等生活场景，展现壮族人民生活风貌。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <!-- 可参观的壮锦文化场所 -->
+                            <div id="venues-content" class="pattern-content-item">
+                                <h3>壮锦文化场所</h3>
+                                <p>以下是您可以参观学习壮锦文化的场所，感受传统工艺的魅力：</p>
+                                
+                                <ul class="venue-list">
+                                    <li class="venue-item">
+                                        <div class="venue-icon">🏛️</div>
+                                        <div class="venue-info">
+                                            <h4>广西民族博物馆</h4>
+                                            <p>地址：广西南宁市青秀区青环路11号</p>
+                                            <p>开放时间：周二至周日 9:00-17:00</p>
+                                            <p>拥有丰富的壮锦藏品和详实的文化介绍，定期举办织锦技艺展示活动。</p>
+                                        </div>
+                                    </li>
+                                    
+                                    <li class="venue-item">
+                                        <div class="venue-icon">🏯</div>
+                                        <div class="venue-info">
+                                            <h4>靖西壮锦博物馆</h4>
+                                            <p>地址：广西百色市靖西市新靖镇城中路</p>
+                                            <p>开放时间：每日 8:30-17:30</p>
+                                            <p>中国首家壮锦专题博物馆，收藏有明清以来的珍贵壮锦作品。</p>
+                                        </div>
+                                    </li>
+                                    
+                                    <li class="venue-item">
+                                        <div class="venue-icon">🎭</div>
+                                        <div class="venue-info">
+                                            <h4>宾阳壮锦传承基地</h4>
+                                            <p>地址：广西南宁市宾阳县宾州镇</p>
+                                            <p>开放时间：周一至周六 9:00-16:30</p>
+                                            <p>可观看壮锦制作全过程，体验织锦技艺，购买正宗壮锦产品。</p>
+                                        </div>
+                                    </li>
+                                    
+                                    <li class="venue-item">
+                                        <div class="venue-icon">🏞️</div>
+                                        <div class="venue-info">
+                                            <h4>龙脊梯田壮锦工坊</h4>
+                                            <p>地址：广西桂林市龙胜各族自治县龙脊镇</p>
+                                            <p>开放时间：每日 8:00-18:00</p>
+                                            <p>结合梯田景观与壮锦文化，可在欣赏自然风光的同时了解传统工艺。</p>
+                                        </div>
+                                    </li>
+                                    
+                                    <li class="venue-item">
+                                        <div class="venue-icon">🏡</div>
+                                        <div class="venue-info">
+                                            <h4>忻城莫土司衙署</h4>
+                                            <p>地址：广西来宾市忻城县城关镇</p>
+                                            <p>开放时间：周二至周日 9:00-17:00</p>
+                                            <p>保存有大量清代壮锦文物，展示土司时期壮锦的宫廷应用。</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 生成页面 -->
+        <div id="generate-page" class="page">
+            <div class="generate-container">
+                <a href="#" class="back-btn" data-page="home">← 返回首页</a>
+                
+                <h1 class="generate-title">壮锦新生-非遗纹样创意生成</h1>
+                
+                <div class="tips-section">
+                    <p class="tips-text">
+                        💡 请上传分辨率为512x512的图片，否则可能会导致生成效果不理想<br>
+                        <span class="tips-link" onclick="window.open('https://www.birme.net/')">点我跳转到图片裁切页面</span><br>
+                        对纹样不满意可以多点几下生成哦~
+                    </p>
+                </div>
+
+                <div class="upload-section">
+                    <label class="upload-label">
+                        📤 上传纹样图片
+                        <input type="file" id="imageUpload" accept="image/*">
+                    </label>
+                    <input type="hidden" id="originalImageUrl">
+                    <button id="generateBtn">✨ 创意生成</button>
+                </div>
+
+                <div class="preview-section">
+                    <div class="image-box">
+                        <h3>原始纹样</h3>
+                        <canvas id="originalCanvas" width="400" height="400"></canvas>
+                    </div>
+                    <div class="image-box">
+                        <h3>生成纹样</h3>
+                        <canvas id="resultCanvas" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 壮锦文创定制页面 -->
+        <div id="culturalCustomize-page" class="page">
+            <div class="customize-container">
+                <a href="#" class="back-btn" data-page="home">← 返回首页</a>
+                
+                <h1 class="customize-title">壮锦文创产品定制</h1>
+                
+                <div class="tips-section">
+                    <p class="tips-text">
+                        💡 请先上传您的壮锦纹样，然后选择文创产品类型<br>
+                        点击"生成文创产品"按钮预览效果，满意后可下载高清产品图
+                    </p>
+                </div>
+                
+                <!-- 修改后的上传和选择区域 -->
+                <div class="customize-upload-section">
+                    <label class="upload-label">
+                        📤 上传您的壮锦纹样
+                        <input type="file" id="customizeUpload" accept="image/*">
+                    </label>
+                    
+                    <select id="productSelect">
+                        <option value="">请选择文创产品</option>
+                        <option value="mug">马克杯</option>
+                        <option value="bag">帆布包</option>
+                        <option value="pen">笔</option>
+                        <option value="fan">扇子</option>
+                        <option value="fridge_magnet">冰箱贴</option>
+                        <option value="shirt">衬衫</option>
+                    </select>
+                    
+                    <button id="productBtn">生成文创产品</button>
+                </div>
+                
+                <div class="customize-preview-section">
+                    <!-- 纹样预览区 -->
+                    <div class="pattern-preview">
+                        <h3>纹样预览</h3>
+                        <canvas id="patternCanvas" width="400" height="400"></canvas>
+                    </div>
+                    
+                    <!-- 文创产品预览区 -->
+                    <div class="image-box">
+                        <h3>文创产品预览</h3>
+                        <canvas id="productCanvas" width="400" height="400"></canvas>
+                    </div>
+                </div>
+
+                <div class="product-preview">
+                    <div>
+                        <button id="downloadProductBtn">下载产品图</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#" class="footer-link">关于我们</a>
+                <a href="#" class="footer-link">联系我们</a>
+                <a href="#" class="footer-link">隐私政策</a>
+                <a href="#" class="footer-link">使用条款</a>
+                <a href="#" class="footer-link">帮助中心</a>
+            </div>
+            <div class="copyright">
+                © 2025 壮锦新生 - 非遗纹样创意生成平台 | 传承民族文化，创新非遗设计
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面导航功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 页面切换功能
+            const navLinks = document.querySelectorAll('.nav-link, .nav-btn, .back-btn');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    // 更新导航激活状态
+                    document.querySelectorAll('.nav-link').forEach(nav => {
+                        nav.classList.remove('active');
+                        if (nav.getAttribute('data-page') === targetPage) {
+                            nav.classList.add('active');
+                        }
+                    });
+                    
+                    // 隐藏所有页面
+                    document.querySelectorAll('.page').forEach(page => {
+                        page.classList.remove('active');
+                    });
+                    
+                    // 显示目标页面
+                    document.getElementById(`${targetPage}-page`).classList.add('active');
+                    
+                    // 初始化当前页面
+                    if (targetPage === 'generate') {
+                        initGeneratePage();
+                    } else if (targetPage === 'culturalCustomize') {
+                        initCulturalCustomizePage();
+                    } else if (targetPage === 'pattern-intro') {
+                        initPatternIntroPage();
+                    }
+                });
+            });
+            
+            // 轮播图功能
+            const carouselSlides = document.querySelectorAll('.carousel-slide');
+            const carouselDots = document.querySelectorAll('.carousel-dot');
+            let currentSlide = 0;
+            
+            function showSlide(index) {
+                carouselSlides.forEach(slide => slide.classList.remove('active'));
+                carouselDots.forEach(dot => dot.classList.remove('active'));
+                
+                carouselSlides[index].classList.add('active');
+                carouselDots[index].classList.add('active');
+                currentSlide = index;
+            }
+            
+            carouselDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    showSlide(index);
+                });
+            });
+            
+            // 自动轮播
+            setInterval(() => {
+                let nextSlide = (currentSlide + 1) % carouselSlides.length;
+                showSlide(nextSlide);
+            }, 5000);
+            
+            // 生成页功能
+            if (document.getElementById('generate-page').classList.contains('active')) {
+                initGeneratePage();
+            }
+            
+            // 文创定制页功能
+            if (document.getElementById('culturalCustomize-page').classList.contains('active')) {
+                initCulturalCustomizePage();
+            }
+            
+            // 纹样介绍页功能
+            if (document.getElementById('pattern-intro-page').classList.contains('active')) {
+                initPatternIntroPage();
+            }
+        });
+        
+        // 生成页面初始化
+        function initGeneratePage() {
+            const imageUpload = document.getElementById('imageUpload');
+            const originalCanvas = document.getElementById('originalCanvas');
+            const resultCanvas = document.getElementById('resultCanvas');
+            const generateBtn = document.getElementById('generateBtn');
+            
+            let originalImage = null;
+            let processedImage = null;
+            
+            // 图片上传处理
+            imageUpload.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        originalImage = new Image();
+                        originalImage.onload = function() {
+                            drawImage(originalCanvas, originalImage);
+                        };
+                        originalImage.src = event.target.result;
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 创意生成按钮
+            generateBtn.addEventListener('click', () => {
+                if (!originalImage) {
+                    alert('请先上传图片');
+                    return;
+                }
+                
+                // 显示生成中提示
+                generateBtn.disabled = true;
+                generateBtn.textContent = '生成中...';
+                
+                // 模拟生成过程
+                setTimeout(() => {
+                    // 创建处理后的图像
+                    processedImage = processImage(originalImage);
+                    
+                    // 绘制到画布
+                    drawImage(resultCanvas, processedImage);
+                    
+                    // 恢复按钮状态
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = '✨ 创意生成';
+                    
+                    alert('生成完成！');
+                }, 2000);
+            });
+            
+            // 图像处理函数
+            function processImage(img) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // 设置画布尺寸
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // 应用特效
+                ctx.drawImage(img, 0, 0);
+                
+                // 添加传统纹样边框
+                ctx.strokeStyle = '#8b4513';
+                ctx.lineWidth = 10;
+                ctx.strokeRect(10, 10, canvas.width-20, canvas.height-20);
+                
+                // 创建新Image对象
+                const processed = new Image();
+                processed.src = canvas.toDataURL();
+                return processed;
+            }
+            
+            // 绘制图像到画布
+            function drawImage(canvas, image) {
+                const ctx = canvas.getContext('2d');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                ctx.drawImage(image, 0, 0);
+            }
+        }
+        
+        // 文创定制页面初始化
+        function initCulturalCustomizePage() {
+            const customizeUpload = document.getElementById('customizeUpload');
+            const patternCanvas = document.getElementById('patternCanvas');
+            const productSelect = document.getElementById('productSelect');
+            const productBtn = document.getElementById('productBtn');
+            const productCanvas = document.getElementById('productCanvas');
+            const downloadProductBtn = document.getElementById('downloadProductBtn');
+            
+            let patternImage = null;
+            
+            // 图片上传处理
+            customizeUpload.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        patternImage = new Image();
+                        patternImage.onload = function() {
+                            drawImage(patternCanvas, patternImage);
+                        };
+                        patternImage.src = event.target.result;
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 文创产品生成
+            productBtn.addEventListener('click', () => {
+                if (!patternImage) {
+                    alert('请先上传纹样图片');
+                    return;
+                }
+                
+                const productType = productSelect.value;
+                if (!productType) {
+                    alert('请选择文创产品类型');
+                    return;
+                }
+                
+                // 生成文创产品
+                generateCulturalProduct(patternImage, productType);
+            });
+            
+            // 下载产品图片
+            downloadProductBtn.addEventListener('click', () => {
+                if (!productCanvas) return;
+                
+                const link = document.createElement('a');
+                link.download = `文创产品_${new Date().getTime()}.png`;
+                link.href = productCanvas.toDataURL('image/png');
+                link.click();
+            });
+            
+            // 文创产品生成函数
+            function generateCulturalProduct(image, type) {
+                const ctx = productCanvas.getContext('2d');
+                ctx.clearRect(0, 0, productCanvas.width, productCanvas.height);
+                
+                // 创建临时画布处理模板
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = 400;
+                tempCanvas.height = 400;
+                
+                // 背景色
+                tempCtx.fillStyle = '#f8f1e5';
+                tempCtx.fillRect(0, 0, 400, 400);
+                
+                // 根据产品类型应用不同模板
+                switch(type) {
+                    case 'mug':
+                        // 马克杯模板
+                        tempCtx.fillStyle = '#FFFFFF';
+                        tempCtx.fillRect(100, 100, 200, 250);
+                        tempCtx.drawImage(image, 120, 120, 160, 160);
+                        tempCtx.strokeStyle = '#d4af7a';
+                        tempCtx.lineWidth = 5;
+                        tempCtx.strokeRect(100, 100, 200, 250);
+                        break;
+                        
+                    case 'bag':
+                        // 帆布包模板
+                        tempCtx.fillStyle = '#F5F5F5';
+                        tempCtx.fillRect(80, 80, 240, 300);
+                        tempCtx.drawImage(image, 100, 100, 200, 200);
+                        tempCtx.strokeStyle = '#8b4513';
+                        tempCtx.lineWidth = 4;
+                        tempCtx.strokeRect(80, 80, 240, 300);
+                        break;
+                        
+                    case 'pen':
+                        // 笔模板
+                        tempCtx.fillStyle = '#D4AF37';
+                        tempCtx.fillRect(170, 100, 60, 200);
+                        tempCtx.drawImage(image, 180, 120, 40, 160);
+                        break;
+                        
+                    case 'fan':
+                        // 扇子模板
+                        tempCtx.beginPath();
+                        tempCtx.moveTo(200, 200);
+                        tempCtx.arc(200, 200, 150, 0.2 * Math.PI, 0.8 * Math.PI);
+                        tempCtx.closePath();
+                        tempCtx.fillStyle = '#f0e6d2';
+                        tempCtx.fill();
+                        tempCtx.drawImage(image, 120, 120, 160, 160);
+                        break;
+                        
+                    case 'fridge_magnet':
+                        // 冰箱贴模板
+                        tempCtx.fillStyle = '#e0e0e0';
+                        tempCtx.fillRect(150, 150, 100, 100);
+                        tempCtx.drawImage(image, 160, 160, 80, 80);
+                        break;
+                        
+                    case 'shirt':
+                        // 衬衫模板
+                        tempCtx.fillStyle = '#4a86e8';
+                        tempCtx.fillRect(100, 100, 200, 250);
+                        tempCtx.drawImage(image, 140, 150, 120, 120);
+                        break;
+                }
+                
+                // 绘制阴影效果
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 5;
+                ctx.drawImage(tempCanvas, 0, 0);
+                
+                // 移除阴影效果
+                ctx.shadowColor = 'transparent';
+            }
+            
+            // 绘制图像到画布
+            function drawImage(canvas, image) {
+                const ctx = canvas.getContext('2d');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                ctx.drawImage(image, 0, 0);
+            }
+        }
+        
+        // 纹样介绍页面初始化
+        function initPatternIntroPage() {
+            const navItems = document.querySelectorAll('.pattern-nav-item');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有激活状态
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    document.querySelectorAll('.pattern-content-item').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // 添加当前激活状态
+                    this.classList.add('active');
+                    const contentId = this.getAttribute('data-content') + '-content';
+                    document.getElementById(contentId).classList.add('active');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

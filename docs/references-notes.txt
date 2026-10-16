@@ -1,0 +1,170 @@
+API参考：
+API开放平台
+API接口文档
+以下参数来自快捷应用：壮锦项目step1：基于原有纹样创新生成样式
+接口请求：
+POSThttps://openapi.liblibai.cloud/api/generate/comfyui/app
+参数示例
+JSON
+复制
+request_body ={
+    "templateUuid": "4df2efa0f18d46dc9758803e478eb51c",
+    "generateParams": {
+        "3": {
+            "class_type": "KSampler",
+            "inputs": {
+                "steps": 25,
+                "denoise": 1
+            }
+        },
+        "6": {
+            "class_type": "CLIPTextEncode",
+            "inputs": {
+                "text": "Zhuang brocade innovative design, traditional craftsmanship, ethnic patterns, geometric shapes mixed with phoenix/flower/bird motifs, high-saturation gradient colors, vibrant color contrast, intricate weaving textures, sharp clear lines, natural fabric texture, soft ambient lighting, cultural heritage elements, modern ethnic fusion style, balanced composition, detailed warp-weft structure, artistic diversity, non-repeating patterns, organic flow, symbolic meaning, textile art, 8K ultra-detailed, realistic embroidery details  "
+            }
+        },
+        "7": {
+            "class_type": "CLIPTextEncode",
+            "inputs": {
+                "text": "text, watermark, embedding:bad-picture-chill-75v, low resolution, blurry, pixelated, grainy, low quality, out of focus, uneven lighting, monotonous color palette, repetitive patterns, cluttered textures, dull colors, oversaturated, unrealistic proportions, chaotic composition, modern minimalist style, industrial design, western geometric patterns only, digital noise, artificial lighting, plastic texture, synthetic fabric, machine-made appearance, lack of ethnic characteristics, no traditional craftsmanship details, flat 2D effect, generic patterns, abstract art only, no natural elements, human"
+            }
+        },
+        "11": {
+            "class_type": "LoadImage",
+            "inputs": {
+                "image": "https://liblibai-tmp-image.liblib.cloud/img/4f4ebbb24a5b4ac187febdaa390d9750/e3c23cfb7ec656dfd64ba2a1998d4c2948ae87ef879bff46a4dcee902902278f.png"
+            }
+        },
+        "workflowUuid": "a80c31be2aba4901b0073cbc33be4741"
+    }
+}
+参数说明
+节点ID	节点类型	节点名称	参数项	参数名称	参数说明
+11	LoadImage	加载图像	
+image
+图像
+{
+  "name": "image",
+  "displayName": "图像",
+  "type": "IMAGE",
+  "defaultValue": "img/4f4ebbb24a5b4ac187febdaa390d9750/e3c23cfb7ec656dfd64ba2a1998d4c2948ae87ef879bff46a4dcee902902278f.png",
+  "image_upload": true,
+  "id": "image",
+  "isMaskImage": false,
+  "parentId": 11
+}
+3	KSampler	K采样器	
+steps
+步数
+{
+  "name": "steps",
+  "displayName": "步数",
+  "type": "INT",
+  "defaultValue": 25,
+  "min": 1,
+  "max": 10000,
+  "tooltip": "The number of steps used in the denoising process.",
+  "id": "steps",
+  "parentId": 3
+}
+denoise
+降噪
+{
+  "name": "denoise",
+  "displayName": "降噪",
+  "type": "FLOAT",
+  "defaultValue": 1,
+  "min": 0,
+  "max": 1,
+  "step": 0.01,
+  "tooltip": "The amount of denoising applied, lower values will maintain the structure of the initial image allowing for image to image sampling.",
+  "id": "denoise",
+  "parentId": 3
+}
+6	CLIPTextEncode	CLIP文本编码器	
+text
+文本
+{
+  "name": "text",
+  "displayName": "文本",
+  "type": "STRING",
+  "multiline": true,
+  "dynamicPrompts": true,
+  "tooltip": "The text to be encoded.",
+  "defaultValue": "Zhuang brocade innovative design, traditional craftsmanship, ethnic patterns, geometric shapes mixed with phoenix/flower/bird motifs, high-saturation gradient colors, vibrant color contrast, intricate weaving textures, sharp clear lines, natural fabric texture, soft ambient lighting, cultural heritage elements, modern ethnic fusion style, balanced composition, detailed warp-weft structure, artistic diversity, non-repeating patterns, organic flow, symbolic meaning, textile art, 8K ultra-detailed, realistic embroidery details  ",
+  "id": "text",
+  "parentId": 6
+}
+7	CLIPTextEncode	CLIP文本编码器	
+text
+文本
+{
+  "name": "text",
+  "displayName": "文本",
+  "type": "STRING",
+  "multiline": true,
+  "dynamicPrompts": true,
+  "tooltip": "The text to be encoded.",
+  "defaultValue": "text, watermark, embedding:bad-picture-chill-75v, low resolution, blurry, pixelated, grainy, low quality, out of focus, uneven lighting, monotonous color palette, repetitive patterns, cluttered textures, dull colors, oversaturated, unrealistic proportions, chaotic composition, modern minimalist style, industrial design, western geometric patterns only, digital noise, artificial lighting, plastic texture, synthetic fabric, machine-made appearance, lack of ethnic characteristics, no traditional craftsmanship details, flat 2D effect, generic patterns, abstract art only, no natural elements, human",
+  "id": "text",
+  "parentId": 7
+}
+查询生图结果
+POSThttps://openapi.liblibai.cloud/api/generate/comfy/status
+查询结果示意
+JSON
+复制
+{
+        "code": 0,
+        "data": {
+                "accountBalance": 199902456,
+                "generateStatus": 5,
+                "generateUuid": "de9d123ea60e4848b24be280a9d6d866",
+                "images": [
+                        {
+                                "auditStatus": 3,
+                                "imageUrl": "https://liblibai-tmp-image.liblib.cloud/img/360643a3d8414af8b99664b208bc9302/68d2fb14eefa13b14f807dcfb8e14bd376952887fdd344b7efbcb391c914e738.png",
+                                "nodeId": "9",
+                                "outputName": "SaveImage"
+                        }
+                ],
+                "percentCompleted": 1,
+                "pointsCost": 10,
+                "videos": []
+        },
+        "msg": ""
+}}
+返回值说明
+参数	类型	备注
+generateUuid	string	生图任务uuid，使用该uuid查询生图进度
+generateStatus	int	
+生图任务的执行状态：
+1：等待执行
+2：执行中
+3：已生图
+4：审核中
+5：任务成功
+6：任务失败
+percentCompleted	float	生图进度，0到1之间的浮点数
+generateMsg	string	生图信息，提供附加信息，如生图失败信息
+images	[]object	图片列表，只提供审核通过的图片
+images.0.imageUrl	string	图片地址，可直接访问，地址有时效性：7天
+images.0.auditStatus	int	
+审核状态：
+1：待审核
+2：审核中
+3：审核通过
+4：审核拦截
+5：审核失败
+videos	[]object	图片列表，只提供审核通过的图片
+videos.0.videoUrl	string	视频列表，只提供审核通过的视频
+videos.0.coverPath	string	视频地址，可直接访问，地址有时效性：7天
+videos.0.nodeId	string	输出视频的节点ID（可忽略）
+videos.0.outputName	string	输出视频的节点名称
+videos.0.auditStatus	int	
+审核状态：
+1：待审核
+2：审核中
+3：审核通过
+4：审核拦截
+5：审核失败

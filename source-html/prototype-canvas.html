@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>壮锦新生-非遗纹样创意生成</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f1e5;
+        }
+        h1 {
+            color: #8b4513;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .upload-section {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .preview-section {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .image-box {
+            flex: 1;
+            max-width: 450px;
+            border: 3px solid #d4af7a;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fff9f0;
+        }
+        canvas {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-top: 15px;
+        }
+        button {
+            background: #8b4513;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        button:hover {
+            background: #a0522d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        select {
+            padding: 10px 20px;
+            border: 2px solid #d4af7a;
+            border-radius: 25px;
+            background: #fff;
+            font-size: 16px;
+            margin: 20px 0;
+            width: 200px;
+        }
+        .api-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f1e5;
+            border-radius: 8px;
+        }
+        .upload-label {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #d4af7a;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .upload-label:hover {
+            background: #b08c5a;
+        }
+        #imageUpload {
+            display: none;
+        }
+        /* 新增产品预览样式 */
+        .product-preview {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f1e5;
+            border-radius: 8px;
+        }
+        .product-preview .image-box {
+            margin: 0 auto;
+            max-width: 500px;
+        }
+        #downloadProductBtn {
+            background: #d4af7a;
+            margin-top: 15px;
+        }
+        #downloadProductBtn:hover {
+            background: #b08c5a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>壮锦新生-非遗纹样创意生成</h1>
+        
+        <div class="upload-section">
+            <label class="upload-label">
+                📤 上传纹样图片
+                <input type="file" id="imageUpload" accept="image/*">
+            </label>
+            <button id="generateBtn">✨ 创意生成</button>
+        </div>
+
+        <div class="preview-section">
+            <div class="image-box">
+                <h3>原始纹样</h3>
+                <canvas id="originalCanvas" width="400" height="400"></canvas>
+            </div>
+            <div class="image-box">
+                <h3>生成纹样</h3>
+                <canvas id="resultCanvas" width="400" height="400"></canvas>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <select id="productSelect">
+                <option value="">请选择文创产品</option>
+                <option value="mug">马克杯</option>
+                <option value="bag">帆布包</option>
+                <option value="pen">笔</option>
+            </select>
+            <button id="productBtn">生成文创产品</button>
+        </div>
+
+        <!-- 新增产品预览区域 -->
+        <div class="product-preview">
+            <div class="image-box">
+                <h3>文创产品预览</h3>
+                <canvas id="productCanvas" width="400" height="400"></canvas>
+                <div>
+                    <button id="downloadProductBtn">下载产品图</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imageUpload = document.getElementById('imageUpload');
+            const originalCanvas = document.getElementById('originalCanvas');
+            const resultCanvas = document.getElementById('resultCanvas');
+            const generateBtn = document.getElementById('generateBtn');
+            const productSelect = document.getElementById('productSelect');
+            const productBtn = document.getElementById('productBtn');
+            const productCanvas = document.getElementById('productCanvas');
+            const downloadProductBtn = document.getElementById('downloadProductBtn');
+            
+            let originalImage = null;
+            let processedImage = null;
+
+            // 图片上传处理
+            imageUpload.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        originalImage = new Image();
+                        originalImage.onload = () => {
+                            drawImage(originalCanvas, originalImage);
+                        };
+                        originalImage.src = event.target.result;
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+
+            // 创意生成按钮
+            generateBtn.addEventListener('click', () => {
+                if (!originalImage) return;
+                
+                // 创意生成处理（示例：添加民族纹样特效）
+                processedImage = processImage(originalImage);
+                drawImage(resultCanvas, processedImage);
+            });
+
+            // 文创产品生成
+            productBtn.addEventListener('click', () => {
+                if (!processedImage) {
+                    alert('请先生成纹样图案');
+                    return;
+                }
+                const productType = productSelect.value;
+                generateCulturalProduct(processedImage, productType);
+            });
+
+            // 图像处理函数（示例）
+            function processImage(img) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // 设置画布尺寸
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // 应用特效（示例：添加装饰边框）
+                ctx.drawImage(img, 0, 0);
+                
+                // 添加传统纹样边框
+                ctx.strokeStyle = '#8b4513';
+                ctx.lineWidth = 10;
+                ctx.strokeRect(10, 10, canvas.width-20, canvas.height-20);
+                
+                // 创建新Image对象
+                const processed = new Image();
+                processed.src = canvas.toDataURL();
+                return processed;
+            }
+
+            // 绘制图像到画布
+            function drawImage(canvas, image) {
+                const ctx = canvas.getContext('2d');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                ctx.drawImage(image, 0, 0);
+            }
+
+            // 文创产品生成函数
+            function generateCulturalProduct(image, type) {
+                if (!type) {
+                    alert('请先选择文创产品类型');
+                    return;
+                }
+
+                const ctx = productCanvas.getContext('2d');
+                ctx.clearRect(0, 0, productCanvas.width, productCanvas.height);
+
+                // 创建临时画布处理模板
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = 400;
+                tempCanvas.height = 400;
+
+                // 根据产品类型应用不同模板
+                switch(type) {
+                    case 'mug':
+                        // 马克杯模板
+                        tempCtx.fillStyle = '#FFFFFF';
+                        tempCtx.fillRect(0, 0, 400, 400);
+                        tempCtx.drawImage(image, 50, 100, 300, 200);
+                        break;
+                        
+                    case 'bag':
+                        // 帆布包模板
+                        tempCtx.fillStyle = '#F5F5F5';
+                        tempCtx.fillRect(0, 0, 400, 400);
+                        tempCtx.drawImage(image, 50, 80, 300, 240);
+                        break;
+                        
+                    case 'pen':
+                        // 笔模板
+                        tempCtx.fillStyle = '#D4AF37';
+                        tempCtx.fillRect(0, 0, 400, 400);
+                        tempCtx.drawImage(image, 180, 150, 80, 200);
+                        break;
+                }
+
+                // 绘制阴影效果
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 5;
+                ctx.drawImage(tempCanvas, 0, 0);
+
+                // 移除阴影效果
+                ctx.shadowColor = 'transparent';
+            }
+            // 文创产品生成接口（预留）
+            function generateCulturalProduct(image, type) {
+                // TODO: 调用文创产品生成API
+                console.log(`生成${type}产品:`, image);
+                
+                /* 示例API调用逻辑
+                fetch('/api/generate-product', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        image: image.src,
+                        productType: type
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // 处理返回的文创产品图片
+            // 下载产品图片
+            downloadProductBtn.addEventListener('click', () => {
+                if (!productCanvas) return;
+                
+                const link = document.createElement('a');
+                link.download = `文创产品_${new Date().getTime()}.png`;
+                link.href = productCanvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>

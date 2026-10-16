@@ -1,0 +1,12 @@
+# Web 服务
+Flask>=3.0.0
+Flask-Cors>=4.0.0
+
+# 图片处理
+Pillow>=10.0.0
+
+# HTTP 客户端（调用图床与 LiblibAI API）
+requests>=2.31.0
+
+# 可选：从 .env 加载环境变量（未安装时 server.py 会静默跳过）
+python-dotenv>=1.0.0

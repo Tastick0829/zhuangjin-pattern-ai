@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>壮锦新生</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('image-preview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+                document.querySelector('.upload-section .btn').style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>壮锦新生</h1>
+            <p>上传您的壮锦图片，体验创意生成</p>
+        </div>
+        
+        <div class="upload-section">
+            <form method="post" enctype="multipart/form-data">
+                <div class="file-input">
+                    <label for="file-upload">选择壮锦图片</label>
+                    <input id="file-upload" type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+                </div>
+                <img id="image-preview" style="display:none; max-width:300px; margin:20px auto; border-radius:4px;">
+                <button type="submit" class="btn" style="display:none;">确认上传</button>
+            </form>
+        </div>
+        
+        {% if original_img %}
+        <div class="gallery">
+            <div class="image-box">
+                <h3>原始壮锦</h3>
+                <img src="{{ url_for('uploaded_file', filename=original_img) }}" alt="原始壮锦图片">
+                
+                <form method="post" style="margin-top:20px;">
+                    <input type="hidden" name="original_filename" value="{{ original_img }}">
+                    <button type="submit" name="generate" class="btn">创意生成</button>
+                </form>
+            </div>
+            
+            <div class="image-box">
+                <h3>创意壮锦</h3>
+                {% if generated_img %}
+                <img src="{{ url_for('generated_file', filename=generated_img) }}" alt="创意壮锦图片">
+                {% else %}
+                <div style="height: 300px; display: flex; align-items: center; justify-content: center; color: #999;">
+                    {{ "请点击创意生成按钮" if original_img else "等待上传图片" }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
