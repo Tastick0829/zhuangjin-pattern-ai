@@ -10,9 +10,9 @@
 
 | 代 | 文件 | 底模 | 关键节点 | 用途 |
 | --- | --- | --- | --- | --- |
-| **一代** | `2025-05-19 19_32_18 (1).json` | `AnythingV5V3_v5v3` | `CheckpointLoaderSimple` + `CLIPTextEncode` ×2 + **`LoraLoader`** | 早期文生图，试挂 LoRA |
-| **二代** | `2025-05-21 17_27_06.json`、`(1)` | `AnythingV5V3_v5v3` | `VAEEncode` + `ImageScaleBy` + `VAEDecode` + `PreviewImage` | **图生图**（风格化再造） |
-| **三代** | `马克杯.json` | **`星芒Anything_万物皆可FLUX_V1`** | `UNETLoader` + `DualCLIPLoader` + `VAELoader` + **`FluxGuidance`** | 最终版：Flux 架构 + 产品载体 |
+| **一代** | `01-txt2img-anythingv5.json` | `AnythingV5V3_v5v3` | `CheckpointLoaderSimple` + `CLIPTextEncode` ×2 + **`LoraLoader`** | 早期文生图，试挂 LoRA |
+| **二代** | `02-img2img-v1.json`、`(1)` | `AnythingV5V3_v5v3` | `VAEEncode` + `ImageScaleBy` + `VAEDecode` + `PreviewImage` | **图生图**（风格化再造） |
+| **三代** | `03-flux-mug-product.json` | **`星芒Anything_万物皆可FLUX_V1`** | `UNETLoader` + `DualCLIPLoader` + `VAELoader` + **`FluxGuidance`** | 最终版：Flux 架构 + 产品载体 |
 
 ### 演进逻辑
 
@@ -39,7 +39,7 @@
 
 ### 2.1 一代：文生图 + LoRA 挂载
 
-**文件**：`2025-05-19 19_32_18 (1).json`
+**文件**：`01-txt2img-anythingv5.json`
 
 **节点链**：
 
@@ -69,7 +69,7 @@ KSampler ─> VAEDecode ─> SaveImage
 
 ### 2.2 二代：图生图（风格化再造）
 
-**文件**：`2025-05-21 17_27_06.json`、`2025-05-21 17_27_06 (1).json`
+**文件**：`02-img2img-v1.json`、`02-img2img-v2.json`
 
 **节点链**：
 
@@ -94,7 +94,7 @@ CLIPTextEncode(正/负) ──────────────────�
 
 ### 2.3 三代：Flux 架构 + 产品载体
 
-**文件**：`马克杯.json`（对应应用层 `/generate` 调用的工作流）
+**文件**：`03-flux-mug-product.json`（对应应用层 `/generate` 调用的工作流）
 
 **节点链**：
 
