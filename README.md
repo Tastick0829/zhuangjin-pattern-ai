@@ -130,7 +130,11 @@
 
 本项目配套研究论文：《**AI赋能非遗新生：广西壮锦数字化纹样创新生成系统的设计与实践研究**》
 
-> 作者：{匿名作者一} / {匿名作者二} / {匿名作者三}　｜　完整版见 [`paper/`](./paper/)（DOCX 可编辑 + PDF 便于阅读）
+> 作者：{匿名作者一} / {匿名作者二} / {匿名作者三}
+>
+> **在线阅读** → [📖 Markdown 版](./paper/paper-main.md)（GitHub 直接渲染，含全部插图）
+>
+> 其他格式 → [PDF](./paper/paper-main.pdf)　·　[DOCX 可编辑](./paper/paper-main.docx)　·　[早期版](./paper/paper-early.md)
 
 ### 摘要
 
@@ -216,7 +220,7 @@
 
 ### 论文插图索引
 
-论文原始插图位于 DOCX 中，完整查看请打开 [`paper/paper-main.docx`](./paper/paper-main.docx) 或 [`paper/paper-main.pdf`](./paper/paper-main.pdf)。
+论文插图已压缩后**内嵌在 [Markdown 版](./paper/paper-main.md) 中**，可在线直接查看（33 张图 / 4.7 MB）；需要原始高清插图时再打开 [`paper/paper-main.docx`](./paper/paper-main.docx)。
 
 | 图 | 内容 | 对应本仓库 |
 | --- | --- | --- |
